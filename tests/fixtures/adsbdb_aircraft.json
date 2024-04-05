@@ -1,0 +1,17 @@
+{
+  "response": {
+    "aircraft": {
+      "type": "EMB-195 LR",
+      "icao_type": "E195",
+      "manufacturer": "Embraer",
+      "mode_s": "300393",
+      "registration": "I-ADJK",
+      "registered_owner_country_iso_name": "IT",
+      "registered_owner_country_name": "Italy",
+      "registered_owner_operator_flag_code": "DLA",
+      "registered_owner": "Air Dolomiti",
+      "url_photo": "https://cdn.airport-data.com/images/aircraft/001/743/001743900.jpg",
+      "url_photo_thumbnail": "https://cdn.airport-data.com/images/aircraft/thumbnails/001/743/001743900.jpg"
+    }
+  }
+}
