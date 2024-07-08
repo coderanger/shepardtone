@@ -1,10 +1,17 @@
 import enum
+import os
 
 import attrs
 import cattrs
 import httpx
 
-_CLIENT = httpx.AsyncClient(base_url="https://opensky-network.org/api")
+_CLIENT = httpx.AsyncClient(
+    base_url="https://opensky-network.org/api",
+    auth=httpx.BasicAuth(
+        username=os.environ["OPENSKY_USERNAME"],
+        password=os.environ["OPENSKY_PASSWORD"],
+    ),
+)
 
 
 class PositionSource(enum.IntEnum):
@@ -37,7 +44,7 @@ class Category(enum.IntEnum):
     LINE_OBSTACLE = 20
 
 
-@attrs.define
+@attrs.define(frozen=True)
 class State:
     icao24: str
     callsign: str | None
@@ -66,14 +73,19 @@ def structure_state(state_vector: list, cl: type) -> State:
 cattrs.register_structure_hook(State, structure_state)
 
 
-@attrs.define
+@attrs.define(frozen=True)
 class Response:
     time: int
-    states: list[State]
+    states: list[State] | None
 
 
 async def get_states(
-    *, lomin: float, lomax: float, lamin: float, lamax: float
+    *,
+    lomin: float,
+    lomax: float,
+    lamin: float,
+    lamax: float,
+    extended: bool = True,
 ) -> Response:
     resp = await _CLIENT.get(
         "states/all",
@@ -82,7 +94,9 @@ async def get_states(
             "lomax": lomax,
             "lamin": lamin,
             "lamax": lamax,
+            "extended": "1" if extended else "0",
         },
     )
     resp.raise_for_status()
+    # print(resp.json())
     return cattrs.structure(resp.json(), Response)
